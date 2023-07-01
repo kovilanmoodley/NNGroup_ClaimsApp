@@ -6,11 +6,13 @@ namespace NNGroup_DataManager.DataAccess
     {
         void AddClientsToMemory();
         void AddEpmlopyeesToMemory();
-        bool ApproveDenyClaim(int claimID, int employeeID, ClaimStatuses approveOrReject);
-        public bool CancelClaim(int claimID, int clientID);
-        void AuditClaim(Claim claim);
-        int MakeClaim(Claim newClaim);
-        Claim? ViewClaim(int claimID);
-        List<AuditClaim>? ViewFullClaimHistory(int claimID);
+        string ApproveDenyClaim(int claimID, int employeeID, string claimStatus);
+        string CancelClaim(int claimID, int clientID);
+        void ArchiveClaim(Claim claim);
+        int MakeClaim(ClaimRequest claimRequest);
+        bool ClaimExitsForClient(ClaimStatusChangeRequest claimStatusChangeRequest);
+        bool ClaimExitsForEmployee(ClaimStatusChangeRequest claimStatusChangeRequest);
+        Claim? ViewClaim(ClaimStatusChangeRequest claimStatusChangeRequest);
+        List<AuditClaim>? ViewFullClaimHistory(int claimID, int employeeID);
     }
 }

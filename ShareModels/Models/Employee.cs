@@ -2,6 +2,12 @@
 
 namespace ShareModels.Models
 {
+    public enum EmployeeRoles
+    {
+        Admin = 0,
+        Approver = 1,
+        ReadOnly = 2
+    }
     public class Employee
     {
         public int EmployeeID { get; set; }
@@ -13,11 +19,5 @@ namespace ShareModels.Models
         public string? Email { get; set; }
         public string? Cellphone { get; set; }
         public EmployeeRoles EmployeeRole { get; set; }
-        public enum EmployeeRoles
-        {
-            Admin = 0,
-            Approver = 1,
-            ReadOnly = 2
-        }
     }
 }

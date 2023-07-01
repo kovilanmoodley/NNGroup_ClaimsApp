@@ -15,14 +15,14 @@ namespace NNGroup_DataManager.Controllers
         {
             _context = context;
         }
-        [HttpGet("{id}")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult Get(int id)
+        public ActionResult Get(int claimid, int employeeid)
         {
-            List<AuditClaim> fullClaimHistory = _context.ViewFullClaimHistory(id)!;
+            List<AuditClaim> fullClaimHistory = _context.ViewFullClaimHistory(claimid, employeeid)!;
 
-            if (fullClaimHistory.Count == 0)
+            if (fullClaimHistory == null)
                 return NotFound();
             else
                 return Ok(fullClaimHistory);

@@ -20,9 +20,11 @@ namespace NNGroup_DataManager.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult CancelClaim([FromBody] ClaimStatusChangeRequest claimStatusChangeRequest)
         {
-            if (!(_context.CancelClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID)))
-                return NotFound();
-            else return Ok();
+            string result = _context.CancelClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID);
+            if (result != "Ok")
+                return BadRequest(result);
+            else
+                return Ok("Claim has been cancelled");
 
         }
     }

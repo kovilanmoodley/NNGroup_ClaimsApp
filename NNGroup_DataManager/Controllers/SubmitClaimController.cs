@@ -16,21 +16,20 @@ namespace NNGroup_DataManager.Controllers
             _context = context;
         }
 
-        // GET api/<SubmitClaimController>/5
-        [HttpGet("{id}")]
-        public Claim GetById(int id)
-        {
-            return _context.ViewClaim(id);
-        }
 
         // POST api/<SubmitClaimController>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Claim> Create(Claim claim)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult Create(ClaimRequest claimRequest)
         {
-            int newId = _context.MakeClaim(claim);
-            return CreatedAtAction(nameof(GetById), new { id = newId }, _context.ViewClaim(newId));
+            int newId = _context.MakeClaim(claimRequest);
+            if (newId == -1)
+                return BadRequest("Employee or Client List is empty");
+            if (newId == -2)
+                return NotFound("Client ID not found");
+            return Ok($"Claim created successfull. Your claim ID is {newId}");
         }
         
 

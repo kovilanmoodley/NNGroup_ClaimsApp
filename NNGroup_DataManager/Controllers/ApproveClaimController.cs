@@ -22,9 +22,11 @@ namespace NNGroup_DataManager.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult ApproveClaim([FromBody] ClaimStatusChangeRequest claimStatusChangeRequest)
         {
-            if (!(_context.ApproveDenyClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID, ClaimStatuses.Approved)))
-                return BadRequest();
-            else return Ok();
+            string result = _context.ApproveDenyClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID, "Approved");
+            if (result != "Ok")
+                return BadRequest(result);
+            else 
+                return Ok("Claim has been approved");
 
         }
 

@@ -11,12 +11,12 @@
     public class Claim
     {
         public int ClaimID { get; set; }
-        public int ClientID { get; set; }
-        public int EmployeeID { get; set; } = 0;
+        public Client? Client { get; set; }
+        public Employee? Employee { get; set; } 
         public string? ClaimDescription { get; set; }
         public double ClaimAmount { get; set; } = 0;
-        public ClaimStatuses ClaimStatus { get; set; } = ClaimStatuses.PendingReview;
-
-
+        public string? ClaimStatus { get; set; }
+        // public ClaimStatuses ClaimStatus { get; set; } = ClaimStatuses.PendingReview;
     }
+    
 }

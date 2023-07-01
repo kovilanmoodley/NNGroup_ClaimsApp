@@ -20,9 +20,11 @@ namespace NNGroup_DataManager.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult DenyClaim([FromBody] ClaimStatusChangeRequest claimStatusChangeRequest)
         {
-            if (!(_context.ApproveDenyClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID, ClaimStatuses.Denied)))
-                return NotFound();
-            else return Ok();
+            string result = _context.ApproveDenyClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID, "Denied");
+            if (result != "Ok")
+                return BadRequest(result);
+            else
+                return Ok("Claim has been denied!!!");
 
         }
     }
