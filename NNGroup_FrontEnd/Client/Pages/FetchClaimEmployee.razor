@@ -1,0 +1,194 @@
+﻿
+@page "/fetchclaimemployee"
+@using ShareModels.Models
+@using System.Text.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>FetchClaimEmployee</h3>
+
+<PageTitle>Display CLaims for Employees to Process</PageTitle>
+
+<h1>View Claim</h1>
+
+<p>This Shows the Claim Status and  Claim details for a Claim ID</p>
+
+<div>
+</div>
+
+<div class="d-grid gap-3">
+    <div class="p-2 bg-light border">
+        <label for="textInput">Claim ID:</label>
+        <input type="text" id="textInput" @bind="@claimID" />
+    </div>
+    <div class="p-2 bg-light border">
+        <div>
+            <label for="textInput">Client ID:</label>
+            <input type="text" id="textInput" @bind="@clientID" />
+        </div>
+    </div>
+    <div class="p-2 bg-light border">
+        <div>
+            <label for="textInput">Client ID:</label>
+            <input type="text" id="textInput" @bind="@employeeID" />
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-primary" @onclick="ViewClaim">Click me</button>
+
+
+
+
+@if (claims != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Claim ID</th>
+                <th>Policy Holder ID</th>
+                <th>Policy Holder</th>
+                <th>Policy Holder Address</th>
+                <th>Employee</th>
+                <th>Claim Description</th>
+                <th>Claim Amount</th>
+                <th>Claim Status</th>
+                <th>Approve Claim</th>
+                <th>Deny Claim</th>
+                <th>History</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in claims)
+            {
+                <tr>
+                    <td>@claim.ClaimID</td>
+                    <td>@claim.Client.ClientID</td>
+                    <td>@($"{claim.Client.FirstName} {claim.Client.Surname}")</td>
+                    <td>@($"{claim.Client.Address1} {claim.Client.Address2}")</td>
+                    <td>@($"{claim.Employee.FirstName} {claim.Employee.Surname}")</td>
+                    <td>@claim.ClaimDescription</td>
+                    <td>@claim.ClaimAmount</td>
+                    <td>@claim.ClaimStatus</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="(() => ApproveClaim(claim))"><i class="oi oi-basket"></i></button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="(() => DenyClaim(claim))"><i class="oi oi-ban"></i></button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="(() => ViewAuditClaim(claim))"><i class="oi oi-copywriting"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private string claimID { get; set; } = string.Empty;
+    private string clientID { get; set; } = string.Empty;
+    private string employeeID { get; set; } = string.Empty;
+    private List<Claim> claims { get; set; } = new();
+    private ClaimStatusChangeRequest claimStatusChangeRequest { get; set; }
+
+
+    private async Task ViewClaim()
+    {
+        string apiUrl = "";
+        bool isSingle = false;
+        claims.Clear();
+        if ((!string.IsNullOrEmpty(claimID)) && (!string.IsNullOrEmpty(clientID)))
+        {
+            apiUrl = $"api/ViewClaimStatus?claimID={claimID}&clientID={clientID}";
+            isSingle = true;
+        }
+        else if (!string.IsNullOrEmpty(clientID))
+        {
+            apiUrl = $"api/ViewClaimsPerClient?clientID={clientID}";
+
+        }
+        else if (!string.IsNullOrEmpty(employeeID))
+        {
+            apiUrl = $"api/ViewClaimsPerEmployee?employeeID={employeeID}";
+
+        }
+
+
+        // Make the API request
+        HttpResponseMessage response = await Http.GetAsync(apiUrl);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Request was successful
+            if (isSingle)
+            {
+                Claim claim = await response.Content.ReadFromJsonAsync<Claim>();
+                claims.Add(claim);
+            }
+            else
+            {
+                claims = await response.Content.ReadFromJsonAsync<List<Claim>>();
+            }
+        }
+        else
+        {
+            // Request failed
+            var json = JsonSerializer.Serialize(response.Content.ToString());
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/errorpage?errorMessage={encodedJson}", forceLoad: true);
+            // Handle the error case
+        };
+    }
+    async Task ApproveClaim(Claim claim)
+    {
+        claimStatusChangeRequest = new() { ClaimID = claim.ClaimID, ID = claim.Employee.EmployeeID };
+        HttpResponseMessage response = await Http.PostAsJsonAsync("api/ApproveClaim", claimStatusChangeRequest);
+        if (response.IsSuccessStatusCode)
+        {
+
+            var json = JsonSerializer.Serialize(claim);
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/viewclaim?claim={encodedJson}", forceLoad: true);
+        }
+        else
+        {
+            // Request failed
+            var json = JsonSerializer.Serialize(response.Content.ToString());
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/errorpage?errorMessage={encodedJson}", forceLoad: true);
+            // Handle the error case
+        };
+
+    }
+    async Task DenyClaim(Claim claim)
+    {
+        claimStatusChangeRequest = new() { ClaimID = claim.ClaimID, ID = claim.Employee.EmployeeID };
+        HttpResponseMessage response = await Http.PostAsJsonAsync("api/DenyClaim", claimStatusChangeRequest);
+        if (response.IsSuccessStatusCode)
+        {
+
+            var json = JsonSerializer.Serialize(claim);
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/viewclaim?claim={encodedJson}", forceLoad: true);
+        }
+        else
+        {
+            // Request failed
+            var json = JsonSerializer.Serialize(response.Content.ToString());
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/errorpage?errorMessage={encodedJson}", forceLoad: true);
+            // Handle the error case
+        };
+
+    }
+    private void ViewAuditClaim(Claim claim)
+    {
+        var json = JsonSerializer.Serialize(claim);
+        var encodedJson = Uri.EscapeDataString(json);
+        NavigationManager.NavigateTo($"/viewauditclaim?claim={encodedJson}", forceLoad: true);
+    }
+
+}
+
+

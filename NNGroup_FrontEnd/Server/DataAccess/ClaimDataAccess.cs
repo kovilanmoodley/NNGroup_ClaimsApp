@@ -13,9 +13,9 @@ namespace NNGroup_FrontEnd.Server.DataAccess
         public List<ShareModels.Models.Client> ClientInMemoryStore = new List<ShareModels.Models.Client>() ;
         public List<Employee> EmployeeInMemoryStore = new List<Employee>();
         public List<Claim> ClaimInMemoryStore = new List<Claim>();
-        private int nextClaimID = 2;
+        private int nextClaimID = 1;
         public List<AuditClaim> AuditClaimInMemoryStore = new List<AuditClaim>();
-        private int nextAuditClaimID = 3;
+        private int nextAuditClaimID = 2;
         private IConfiguration config;
         private int nextEmployee = 100;
         public ClaimDataAccess(IConfiguration config)
@@ -149,6 +149,21 @@ namespace NNGroup_FrontEnd.Server.DataAccess
                 return null;
             return ClaimInMemoryStore.First(p => p.ClaimID == claimID && p.Client.ClientID == DataEncryption.Encrypt(clientID));
         }
+        public List<Claim>? ViewClaimByClient(int clientID)
+        {
+            if (ClaimInMemoryStore.Where(p => p.Client.ClientID == DataEncryption.Encrypt(clientID)).Count() == 0)
+                return null;
+            return (ClaimInMemoryStore.Where(p => p.Client.ClientID == DataEncryption.Encrypt(clientID)).ToList());
+        }
+        public List<Claim>? ViewClaimByEmployee(int employeeID)
+        {
+            if (ClaimInMemoryStore.Where(p => p.Employee.EmployeeID == DataEncryption.Encrypt(employeeID)).Count() == 0)
+                return null;
+            return (ClaimInMemoryStore.Where(p => p.Employee.EmployeeID == DataEncryption.Encrypt(employeeID)).ToList());
+        }
+
+
+
         public List<AuditClaim>? ViewFullClaimHistory(int claimID, int employeeID)
         {
             if (!(doesEmployeeExist(employeeID)))
@@ -159,7 +174,7 @@ namespace NNGroup_FrontEnd.Server.DataAccess
             
             if (result.Count == 0) 
                 return null;
-            //DataEncryption.DecryptAudit(result);
+            DataEncryption.DecryptAudit(result);
             return result;
         }
         /*public void AddDataToMemory<T>(List<T> memoryStore, string filePath)

@@ -18,13 +18,11 @@ namespace NNGroup_FrontEnd.Server.Controllers
             _context = context;
         }
 
-        [HttpGet]
 
         // GET api/<ViewClaimStatusController>/5
-        [HttpGet]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<ShareModels.Models.Claim> Get(int claimID, int clientID)
+        public ActionResult<Claim> Get(int claimID, int clientID)
         {
 
             ShareModels.Models.Claim claim = _context.ViewClaim(claimID, clientID)!;
@@ -39,5 +37,6 @@ namespace NNGroup_FrontEnd.Server.Controllers
                 return Ok(claim);
             }
         }
+
     }
 }

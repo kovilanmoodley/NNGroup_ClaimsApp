@@ -49,12 +49,16 @@ else
     {
         var uri = new Uri(NavigationManager.Uri);
         var queryParams = QueryHelpers.ParseQuery(uri.Query);
-        var encodedJson = queryParams["claim"];
-
-        if (!string.IsNullOrEmpty(encodedJson))
+        if (queryParams.Count != 0)
         {
-            var json = Uri.UnescapeDataString(encodedJson);
-            claim = System.Text.Json.JsonSerializer.Deserialize<Claim>(json);
+            var encodedJson = queryParams["claim"];
+
+            if (!string.IsNullOrEmpty(encodedJson))
+            {
+                var json = Uri.UnescapeDataString(encodedJson);
+                claim = System.Text.Json.JsonSerializer.Deserialize<Claim>(json);
+            }
+
         }
     }
 }

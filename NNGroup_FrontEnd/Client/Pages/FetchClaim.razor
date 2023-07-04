@@ -1,12 +1,14 @@
 ﻿@page "/fetchclaim"
 @using ShareModels.Models
+@using System.Text.Json;
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <PageTitle>Display CLaim and Status</PageTitle>
 
-<h1>View Claim Status</h1>
+<h1>View Claim</h1>
 
-<p>This Shows the Claim Status and  Claim details for a Claim ID</p>
+<p>This Shows the Claim Status and  Claim details for a Claim ID for a Client</p>
 
 <div>
 </div>
@@ -14,82 +16,134 @@
 <div class="d-grid gap-3">
     <div class="p-2 bg-light border">
         <label for="textInput">Claim ID:</label>
-        <input type="text" id="textInput" @bind="@ClaimID" />
+        <input type="text" id="textInput" @bind="@claimID" />
     </div>
     <div class="p-2 bg-light border">
         <div>
             <label for="textInput">Client ID:</label>
-            <input type="text" id="textInput" @bind="@ClientID" />
+            <input type="text" id="textInput" @bind="@clientID" />
         </div>
     </div>
 </div>
 
-<button class="btn btn-primary" @onclick="ViewClaim">Click me</button>
+<button class="btn btn-primary" @onclick="ViewClaims">Click me</button>
 
 
 
 
-        @if (claim != null)
-        {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Claim ID</th>
-                        <th>Policy Holder ID</th>
-                        <th>Policy Holder</th>
-                        <th>Policy Holder Address</th>
-                        <th>Employee</th>
-                        <th>Claim Description</th>
-                        <th>Claim Amount</th>
-                        <th>Claim Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@claim.ClaimID</td>
-                        <td>@claim.Client.ClientID</td>
-                        <td>@($"{claim.Client.FirstName} {claim.Client.Surname}")</td>
-                        <td>@($"{claim.Client.Address1} {claim.Client.Address2}")</td>
-                        <td>@($"{claim.Employee.FirstName} {claim.Employee.Surname}")</td>
-                        <td>@claim.ClaimDescription</td>
-                        <td>@claim.ClaimAmount</td>
-                        <td>@claim.ClaimStatus</td>
-                    </tr>
-                </tbody>
-             </table>
-         }
-        else
-        {
-            <div class="alert alert-primary" role="alert">
-                Claim or Client ID not found!!! No Data
-            </div>
-        }
+@if (claims != null )
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Claim ID</th>
+                <th>Policy Holder ID</th>
+                <th>Policy Holder</th>
+                <th>Policy Holder Address</th>
+                <th>Employee</th>
+                <th>Claim Description</th>
+                <th>Claim Amount</th>
+                <th>Claim Status</th>
+                <th>Cancel Claim</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in claims)
+            {
+                <tr>
+                    <td>@claim.ClaimID</td>
+                    <td>@claim.Client.ClientID</td>
+                    <td>@(
+                        $"{claim.Client.FirstName} {claim.Client.Surname}"
+                        )</td>
+                    <td>@(
+                        $"{claim.Client.Address1} {claim.Client.Address2}"
+                        )</td>
+                    <td>@(
+                        $"{claim.Employee.FirstName} {claim.Employee.Surname}"
+                        )</td>
+                    <td>@claim.ClaimDescription</td>
+                    <td>@claim.ClaimAmount</td>
+                    <td>@claim.ClaimStatus</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="(() => CancelClaim(claim))"><i class="oi oi-pencil"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-    private string ClaimID { get; set; }
-    private string ClientID { get; set; }
-    private Claim claim { get; set; }
-    private string searchErrorMesage { get; set; } = "";
+    private string claimID { get; set; }
+    private string clientID { get; set; }
+    private List<Claim> claims { get; set; } = new();
+    private ClaimStatusChangeRequest claimStatusChangeRequest { get; set; }
 
-    
-    private async Task ViewClaim()
+    private async Task ViewClaims()
     {
-        string apiUrl = $"api/ViewClaimStatus?claimid={ClaimID}&clientid={ClientID}";
-        searchErrorMesage = "";
-        // Make the API request
-        HttpResponseMessage response = await Http.GetAsync(apiUrl);
+        string apiUrl = "";
+        bool isSingle = false;
+        claims.Clear();
+        if ((!string.IsNullOrEmpty(claimID)) && (!string.IsNullOrEmpty(clientID)))
+        {
+            apiUrl = $"api/ViewClaimStatus?claimID={claimID}&clientID={clientID}";
+            isSingle = true;
+        }
+        else if (!string.IsNullOrEmpty(clientID))
+        {
+            apiUrl = $"api/ViewClaimsPerClient?clientID={clientID}";
 
+        }
+        if (apiUrl != "")
+        {
+            // Make the API request
+            HttpResponseMessage response = await Http.GetAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Request was successful
+                if (isSingle)
+                {
+                    Claim claim = await response.Content.ReadFromJsonAsync<Claim>();
+                    claims.Add(claim) ;
+                }
+                else
+                {
+                    claims = await response.Content.ReadFromJsonAsync<List<Claim>>();
+                }
+            }
+            else
+            {
+                var json = JsonSerializer.Serialize(response.Content.ToString());
+                var encodedJson = Uri.EscapeDataString(json);
+                NavigationManager.NavigateTo($"/errorpage?errorMessage={encodedJson}", forceLoad: true);
+                // Handle the error case
+            };
+
+        }
+    }
+
+    async Task CancelClaim(Claim claim)
+    {
+        claimStatusChangeRequest = new() { ClaimID = claim.ClaimID, ID = claim.Client.ClientID };
+        HttpResponseMessage response = await Http.PostAsJsonAsync("api/CancelClaim", claimStatusChangeRequest);
         if (response.IsSuccessStatusCode)
         {
-            // Request was successful
-            claim = await response.Content.ReadFromJsonAsync<Claim>();
+
+            var json = JsonSerializer.Serialize(claim);
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/viewclaim?claim={encodedJson}", forceLoad: true);
         }
         else
         {
             // Request failed
-            searchErrorMesage = "Claim or Client ID not found";
+            var json = JsonSerializer.Serialize(response.Content.ToString());
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/errorpage?errorMessage={encodedJson}", forceLoad: true);
             // Handle the error case
         };
+
     }
 }
 

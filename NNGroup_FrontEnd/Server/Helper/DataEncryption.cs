@@ -12,7 +12,7 @@ namespace NNGroup_FrontEnd.Server.Helper
         {
             return (ID * -1);
         }
-        public static void DecryptAudit(List<AuditClaim> auditList)
+        public static void DecryptAudit<T>(List<AuditClaim> auditList)
         {
             foreach(AuditClaim ac in auditList)
             {

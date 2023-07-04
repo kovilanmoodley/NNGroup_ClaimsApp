@@ -10,5 +10,7 @@ namespace NNGroup_FrontEnd.Server.DataAccess
         int MakeClaim(ClaimRequest claimRequest);
         Claim? ViewClaim(int claimID, int clientID);
         List<AuditClaim>? ViewFullClaimHistory(int claimID, int employeeID);
+        List<Claim>? ViewClaimByEmployee(int employeeID);
+        List<Claim>? ViewClaimByClient(int clientID);
     }
 }

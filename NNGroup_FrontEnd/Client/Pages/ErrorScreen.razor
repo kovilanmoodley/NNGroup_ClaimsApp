@@ -1,0 +1,30 @@
+﻿@page "/errorpage"
+@using ShareModels.Models
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavigationManager
+
+<h3>ErrorScreen</h3>
+<div class="alert alert-primary" role="alert">
+    Error in Processing Claim : @errorMessage
+</div>
+
+@code {
+    private string? errorMessage { get; set; }
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        var queryParams = QueryHelpers.ParseQuery(uri.Query);
+        if (queryParams.Count != 0)
+        {
+            var encodedJson = queryParams["errorMessage"];
+
+            if (!string.IsNullOrEmpty(encodedJson))
+            {
+                var json = Uri.UnescapeDataString(encodedJson);
+                errorMessage = System.Text.Json.JsonSerializer.Deserialize<string>(json);
+            }
+
+        }
+    }
+
+}
