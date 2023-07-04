@@ -1,0 +1,65 @@
+﻿@page "/submitclaim"
+@using ShareModels.Models
+@using System.Text.Json;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>SubmitClaim</h3>
+
+<EditForm Model="claimRequest" OnSubmit="@HandleSubmit">
+    <div>
+        <label for="clientID">Client ID :
+            <InputNumber id="clientID" @bind-Value="claimRequest.ClientID" />
+        </label>
+    </div>
+
+    <div>
+        <label for="claimDescription">Claim Description : 
+            <InputText id="claimDescription" @bind-Value="claimRequest.ClaimDescription" class="form-control"></InputText> 
+        </label>
+    </div>
+    <div>
+        <label for="claimAmount">Claim Amount : 
+            <InputNumber id="claimAmount" @bind-Value="claimRequest.ClaimAmount" class="form-control"></InputNumber>
+        </label>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary"> "Submit"</button>
+</EditForm>
+
+@if (createErrorMessage == "")
+{
+    <p></p>
+}
+else
+{
+    <p>Error Creating claim</p>
+}
+
+@code {
+    ClaimRequest claimRequest = new ClaimRequest();
+    private Claim? claim;
+    private string createErrorMessage = "";
+
+    async Task HandleSubmit()
+    {
+        HttpResponseMessage response = await Http.PostAsJsonAsync("api/SubmitClaim", claimRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            // Request was successful
+            claim = await response.Content.ReadFromJsonAsync<Claim>();
+            //redirect
+            
+            var json = JsonSerializer.Serialize(claim);
+            var encodedJson = Uri.EscapeDataString(json);
+            NavigationManager.NavigateTo($"/viewclaim?claim={encodedJson}", forceLoad: true);
+        }
+        else
+        {
+            // Request failed
+            createErrorMessage = "Claim or Client ID not found";
+            // Handle the error case
+        };
+
+    }
+}

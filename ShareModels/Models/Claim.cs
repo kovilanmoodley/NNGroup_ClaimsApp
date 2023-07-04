@@ -18,5 +18,8 @@
         public string? ClaimStatus { get; set; }
         // public ClaimStatuses ClaimStatus { get; set; } = ClaimStatuses.PendingReview;
     }
-    
+    public class Claims
+    {
+        public List<Claim> ClaimList  { get; set; }
+    }
 }

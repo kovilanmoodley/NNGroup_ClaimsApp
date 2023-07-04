@@ -1,0 +1,55 @@
+{
+  "AuditClaimList": [
+    {
+      "Audi1ClaimID": 1,
+      "AuditDate": "2023-02-15T00:00:00Z",
+      "ClaimID": 1,
+      "Client": 
+        {
+          "ClientID": -2,
+          "FirstName": "Tim",
+          "Surname": "Frodo",
+          "Address1": "14 York Road",
+          "Address2": "Gillitts"
+        },
+      "Employee": 
+        {
+          "EmployeeID": -100,
+          "FirstName": "John",
+          "Surname": "Ester",
+          "Address1": "29 RingStreet",
+          "Address2": "Hillcrest",
+          "EmployeeRole": 0
+        },
+      "ClaimDescription": "Tummy Ache",
+      "ClaimAmount": 2000.00,
+      "ClaimStatus": "Pending Review"
+    },
+    {
+      "Audi1ClaimID": 2,
+      "AuditDate": "2023-07-03T00:00:00Z",
+      "ClaimID": 1,
+      "Client": 
+        {
+          "ClientID": -2,
+          "FirstName": "Tim",
+          "Surname": "Frodo",
+          "Address1": "14 York Road",
+          "Address2": "Gillitts"
+        },
+      "Employee": 
+        {
+          "EmployeeID": -100,
+          "FirstName": "John",
+          "Surname": "Ester",
+          "Address1": "29 RingStreet",
+          "Address2": "Hillcrest",
+          "EmployeeRole": 0
+        },
+      "ClaimDescription": "Tummy Ache",
+      "ClaimAmount": 2000.00,
+      "ClaimStatus": "Approved"
+    }
+
+  ]
+}

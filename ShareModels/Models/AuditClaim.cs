@@ -12,4 +12,8 @@
         public double ClaimAmount { get; set; } = 0;
         public string? ClaimStatus { get; set; }
     }
+    public class AuditClaims
+    {
+        public List<AuditClaim> AuditClaimList { get; set; }
+    }
 }

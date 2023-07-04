@@ -20,13 +20,21 @@ namespace NNGroup_DataManager.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult ApproveClaim([FromBody] ClaimStatusChangeRequest claimStatusChangeRequest)
+        public ActionResult<ServiceResult> ApproveClaim([FromBody] ClaimStatusChangeRequest claimStatusChangeRequest)
         {
             string result = _context.ApproveDenyClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID, "Approved");
+            ServiceResult serviceResult = new();
+
             if (result != "Ok")
+            {
+                serviceResult.ResultStatus = result;
                 return BadRequest(result);
-            else 
-                return Ok("Claim has been approved");
+            }
+            else
+            {
+                serviceResult.ResultStatus = "Claim has been approved";
+                return Ok(serviceResult.ResultStatus);
+            }
 
         }
 

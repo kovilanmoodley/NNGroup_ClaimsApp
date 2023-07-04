@@ -1,0 +1,20 @@
+{
+  "ClientList": [
+    {
+      "ClientID": -1,
+      "FirstName": "Bob",
+      "Surname": "Smith",
+      "Address1": "23 Oreo Street",
+      "Address2": "Durban"
+    },
+    {
+      "ClientID": -2,
+      "FirstName": "Tim",
+      "Surname": "Frodo",
+      "Address1": "14 York Road",
+      "Address2": "Gillitts"
+    }
+  ]
+}
+
+         

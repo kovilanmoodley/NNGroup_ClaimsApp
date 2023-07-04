@@ -4,12 +4,13 @@ using System.Diagnostics.Eventing.Reader;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.Xml;
 using NNGroup_DataManager.Helper;
+using Newtonsoft.Json;
 
 namespace NNGroup_DataManager.DataAccess
 {
     public class ClaimDataAccess : IClaimDataAccess
     {
-        public List<Client> ClientInMemoryStore = new List<Client>();
+        public Clients ClientInMemoryStore = new() { ClientList = new List<Client>()};
         public List<Employee> EmployeeInMemoryStore = new List<Employee>();
         public List<Claim> ClaimInMemoryStore = new List<Claim>();
         private int nextClaimID = 0;
@@ -32,7 +33,7 @@ namespace NNGroup_DataManager.DataAccess
         private bool doesClientExist(int clientID)
         {
             
-            if (ClientInMemoryStore.Where(p => p.ClientID ==  (DataEncryption.Encrypt(clientID))) == null)
+            if (ClientInMemoryStore.ClientList.Where(p => p.ClientID ==  (DataEncryption.Encrypt(clientID))) == null)
                 return false;
             return true;
         }
@@ -54,9 +55,8 @@ namespace NNGroup_DataManager.DataAccess
         public int MakeClaim(ClaimRequest claimRequest)
         {
             int employeeID = getNextEmployee();
-            if (ClientInMemoryStore.Where(p => p.ClientID == DataEncryption.Encrypt(claimRequest.ClientID)).Count() == 0)
-                return -1;
-            if (EmployeeInMemoryStore.Where(p => p.EmployeeID == DataEncryption.Encrypt(employeeID)).Count() == 0)
+            if ((ClientInMemoryStore.ClientList.Where(p => p.ClientID == DataEncryption.Encrypt(claimRequest.ClientID)).Count() == 0) ||
+                (EmployeeInMemoryStore.Where(p => p.EmployeeID == DataEncryption.Encrypt(employeeID)).Count() == 0))
                 return -1;
             if (!(doesClientExist(claimRequest.ClientID)))
                 return -2;
@@ -64,7 +64,7 @@ namespace NNGroup_DataManager.DataAccess
             Claim newClaim = new Claim
             {
                 ClaimID = nextClaimID,
-                Client = (ClientInMemoryStore.Where(p => p.ClientID == DataEncryption.Encrypt(claimRequest.ClientID)).First()),
+                Client = (ClientInMemoryStore.ClientList.Where(p => p.ClientID == DataEncryption.Encrypt(claimRequest.ClientID)).First()),
                 Employee = (EmployeeInMemoryStore.Where(p => p.EmployeeID == DataEncryption.Encrypt(employeeID)).First()),
                 ClaimDescription = claimRequest.ClaimDescription,
                 ClaimAmount = claimRequest.ClaimAmount,
@@ -99,9 +99,9 @@ namespace NNGroup_DataManager.DataAccess
         {
             if (ClaimInMemoryStore.Count == 0)
                 return "No Claims";
-            if (ClientInMemoryStore.Count == 0)
+            if (ClientInMemoryStore.ClientList.Count == 0)
                 return "No Clients Loaded";
-            if (ClientInMemoryStore.FirstOrDefault(p => p.ClientID == DataEncryption.Encrypt(clientID)) == null)
+            if (ClientInMemoryStore.ClientList.FirstOrDefault(p => p.ClientID == DataEncryption.Encrypt(clientID)) == null)
                 return "Client ID not Found";
             Claim claim = ClaimInMemoryStore.Where(p => p.ClaimID == claimID && p.Client.ClientID == DataEncryption.Encrypt(clientID)).First()!;
 
@@ -127,17 +127,13 @@ namespace NNGroup_DataManager.DataAccess
                                  FirstName = claim.Client.FirstName,
                                  Surname = claim.Client.Surname,
                                  Address1 = claim.Client.Address1,
-                                 Address2 = claim.Client.Address2,
-                                 Email = claim.Client.Email,
-                                 Cellphone = claim.Client.Cellphone
+                                 Address2 = claim.Client.Address2
                                 },
                 Employee = new() { EmployeeID = claim.Employee.EmployeeID,
                                    FirstName = claim.Employee.FirstName,
                                    Surname = claim.Employee.Surname,
                                    Address1 = claim.Employee.Address1,
                                    Address2 = claim.Employee.Address2,
-                                   Email = claim.Employee.Email,
-                                   Cellphone = claim.Employee.Cellphone,
                                    EmployeeRole  = claim.Employee.EmployeeRole},
                 ClaimDescription = claim.ClaimDescription,
                 ClaimStatus = claim.ClaimStatus
@@ -164,53 +160,17 @@ namespace NNGroup_DataManager.DataAccess
             //DataEncryption.DecryptAudit(result);
             return result;
         }
-        public bool ClaimExitsForClient(ClaimStatusChangeRequest claimStatusChangeRequest)
-        {
-            return (ClaimInMemoryStore.Where(p => p.ClaimID == claimStatusChangeRequest.ClaimID && p.Client.ClientID == DataEncryption.Encrypt(claimStatusChangeRequest.ID)).Count() > 0);
-        }
-        public bool ClaimExitsForEmployee(ClaimStatusChangeRequest claimStatusChangeRequest)
-        {
-            return (ClaimInMemoryStore.Where(p => p.ClaimID == claimStatusChangeRequest.ClaimID && p.Employee.EmployeeID == DataEncryption.Encrypt(claimStatusChangeRequest.ID)).Count() > 0);
-        }
         public void AddClientsToMemory()
         {
-            //config.GetSection("Logging").GetSection("LogLevel").GetValue<string>("Default");
-            if (ClientInMemoryStore.Count == 0)
+            
+            if (ClientInMemoryStore.ClientList.Count == 0)
             {
-                ClientInMemoryStore.Add(
-                    new Client
-                    {
-                        ClientID = -1,
-                        FirstName = "Bob",
-                        Surname = "Oreo",
-                        Address1 = "23 Oreo Street",
-                        Address2 = "Durban",
-                        Email = "bob@Oreo.com",
-                        Cellphone = "0232313"
-                    });
-                ClientInMemoryStore.Add(
-                    new Client
-                    {
-                        ClientID = -2,
-                        FirstName = "Tim",
-                        Surname = "Frodo",
-                        Address1 = "14 Juniper Road",
-                        Address2 = "Gillitts",
-                        Email = "frodo@rings.com",
-                        Cellphone = "0254713"
-                    });
-                ClientInMemoryStore.Add(
-                    new Client
-                    {
-                        ClientID = -3,
-                        FirstName = "Robi",
-                        Surname = "Venter",
-                        Address1 = "23 Tulsidas Place",
-                        Address2 = "Shallcross",
-                        Email = "robi@redplanet.com",
-                        Cellphone = "025471343"
-                    });
-
+                using (StreamReader r = new StreamReader("Data/data.json"))
+                {
+                    string json = r.ReadToEnd();
+                    ClientInMemoryStore = JsonConvert.DeserializeObject<Clients>(json);
+                    //ClientInMemoryStore.Add(cd);
+                }
             }
         }
         public void AddEpmlopyeesToMemory()
@@ -225,8 +185,6 @@ namespace NNGroup_DataManager.DataAccess
                         Surname = "Ester",
                         Address1 = "29 RingStreet",
                         Address2 = "Hillcrest",
-                        Email = "john@nngroup.com",
-                        Cellphone = "0232313",
                         EmployeeRole = EmployeeRoles.Admin
                     });
                 EmployeeInMemoryStore.Add(
@@ -237,8 +195,6 @@ namespace NNGroup_DataManager.DataAccess
                         Surname = "Briggs",
                         Address1 = "107 Dragon Road",
                         Address2 = "Kharwastan",
-                        Email = "frank@nngroup.com",
-                        Cellphone = "0213",
                         EmployeeRole = EmployeeRoles.Approver
                     });
                 EmployeeInMemoryStore.Add(
@@ -249,8 +205,6 @@ namespace NNGroup_DataManager.DataAccess
                         Surname = "Reddy",
                         Address1 = "107 Butterfly Lane",
                         Address2 = "Township",
-                        Email = "gaston@nngroup.com",
-                        Cellphone = "237933",
                         EmployeeRole = EmployeeRoles.ReadOnly
                     });
             }

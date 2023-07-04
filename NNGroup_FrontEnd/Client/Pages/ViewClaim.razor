@@ -1,0 +1,60 @@
+﻿@page "/viewclaim"
+@using ShareModels.Models
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavigationManager
+
+<h3>ViewClaim</h3>
+
+@if (claim != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Claim ID</th>
+                <th>Policy Holder ID</th>
+                <th>Policy Holder</th>
+                <th>Policy Holder Address</th>
+                <th>Employee</th>
+                <th>Claim Description</th>
+                <th>Claim Amount</th>
+                <th>Claim Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@claim.ClaimID</td>
+                <td>@claim.Client.ClientID</td>
+                <td>@($"{claim.Client.FirstName} {claim.Client.Surname}")</td>
+                <td>@($"{claim.Client.Address1} {claim.Client.Address2}")</td>
+                <td>@($"{claim.Employee.FirstName} {claim.Employee.Surname}")</td>
+                <td>@claim.ClaimDescription</td>
+                <td>@claim.ClaimAmount</td>
+                <td>@claim.ClaimStatus</td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-primary" role="alert">
+        Claim not found!!! No Data
+    </div>
+}
+
+
+
+@code {
+    private Claim? claim { get; set; }
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        var queryParams = QueryHelpers.ParseQuery(uri.Query);
+        var encodedJson = queryParams["claim"];
+
+        if (!string.IsNullOrEmpty(encodedJson))
+        {
+            var json = Uri.UnescapeDataString(encodedJson);
+            claim = System.Text.Json.JsonSerializer.Deserialize<Claim>(json);
+        }
+    }
+}

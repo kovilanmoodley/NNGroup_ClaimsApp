@@ -1,0 +1,96 @@
+﻿@page "/fetchclaim"
+@using ShareModels.Models
+@inject HttpClient Http
+
+<PageTitle>Display CLaim and Status</PageTitle>
+
+<h1>View Claim Status</h1>
+
+<p>This Shows the Claim Status and  Claim details for a Claim ID</p>
+
+<div>
+</div>
+
+<div class="d-grid gap-3">
+    <div class="p-2 bg-light border">
+        <label for="textInput">Claim ID:</label>
+        <input type="text" id="textInput" @bind="@ClaimID" />
+    </div>
+    <div class="p-2 bg-light border">
+        <div>
+            <label for="textInput">Client ID:</label>
+            <input type="text" id="textInput" @bind="@ClientID" />
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-primary" @onclick="ViewClaim">Click me</button>
+
+
+
+
+        @if (claim != null)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Policy Holder ID</th>
+                        <th>Policy Holder</th>
+                        <th>Policy Holder Address</th>
+                        <th>Employee</th>
+                        <th>Claim Description</th>
+                        <th>Claim Amount</th>
+                        <th>Claim Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@claim.ClaimID</td>
+                        <td>@claim.Client.ClientID</td>
+                        <td>@($"{claim.Client.FirstName} {claim.Client.Surname}")</td>
+                        <td>@($"{claim.Client.Address1} {claim.Client.Address2}")</td>
+                        <td>@($"{claim.Employee.FirstName} {claim.Employee.Surname}")</td>
+                        <td>@claim.ClaimDescription</td>
+                        <td>@claim.ClaimAmount</td>
+                        <td>@claim.ClaimStatus</td>
+                    </tr>
+                </tbody>
+             </table>
+         }
+        else
+        {
+            <div class="alert alert-primary" role="alert">
+                Claim or Client ID not found!!! No Data
+            </div>
+        }
+
+@code {
+    private string ClaimID { get; set; }
+    private string ClientID { get; set; }
+    private Claim claim { get; set; }
+    private string searchErrorMesage { get; set; } = "";
+
+    
+    private async Task ViewClaim()
+    {
+        string apiUrl = $"api/ViewClaimStatus?claimid={ClaimID}&clientid={ClientID}";
+        searchErrorMesage = "";
+        // Make the API request
+        HttpResponseMessage response = await Http.GetAsync(apiUrl);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Request was successful
+            claim = await response.Content.ReadFromJsonAsync<Claim>();
+        }
+        else
+        {
+            // Request failed
+            searchErrorMesage = "Claim or Client ID not found";
+            // Handle the error case
+        };
+    }
+}
+
+

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NNGroup_DataManager.DataAccess;
 using ShareModels.Models;
+using System.Text.Json;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace NNGroup_DataManager.Controllers
@@ -21,16 +22,23 @@ namespace NNGroup_DataManager.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<string> Get(int claimid, int clientid)
+        public ActionResult<ServiceResult> Get(int claimid, int clientid)
         {
             ClaimStatusChangeRequest claimStatusChangeRequest = new() { ClaimID = claimid, ID = clientid };
 
             Claim claim = _context.ViewClaim(claimStatusChangeRequest)!;
+            ServiceResult serviceResult = new ();
 
             if (claim == null)
+            {
+                serviceResult.ResultStatus = "Claim or Client ID not found";
                 return NotFound();
+            }
             else
-                return Ok(claim.ClaimStatus);
+            {
+                serviceResult.ResultStatus = claim.ClaimStatus;
+                return Ok(serviceResult);
+            }
         }
     }
 }

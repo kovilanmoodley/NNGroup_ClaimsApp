@@ -10,8 +10,6 @@ namespace NNGroup_DataManager.DataAccess
         string CancelClaim(int claimID, int clientID);
         void ArchiveClaim(Claim claim);
         int MakeClaim(ClaimRequest claimRequest);
-        bool ClaimExitsForClient(ClaimStatusChangeRequest claimStatusChangeRequest);
-        bool ClaimExitsForEmployee(ClaimStatusChangeRequest claimStatusChangeRequest);
         Claim? ViewClaim(ClaimStatusChangeRequest claimStatusChangeRequest);
         List<AuditClaim>? ViewFullClaimHistory(int claimID, int employeeID);
     }
