@@ -9,8 +9,8 @@ Consists of the API, a Blazor Web Assembly UI and a basic xUnit Test
   ShareModels and FrontEnd.Shared is shared class libraries
   NNGroup_DataManager folder can be ignored
 
-.Net 6 Core is the framework
-IDE I used is Visual Studio 2022
+.Net 6 Core is the framework.
+The IDE I used is Visual Studio 2022
 
 Nuget Packages Used
   Newtonsoft.Json
@@ -35,13 +35,14 @@ the web api is running from http://localhost:5150
 
 # Step to follow:
 # Get on Login
-Select a user from the drop down list and click login. Please is preloaded users and their role
+Select a user from the drop down list and click login. Please note that this is the list of the preloaded users and their roles
 Bob Smoth - Client
 Tim Frodo - Client
 John Ester - Employee
 Frank Briggs - Employee
 Gaston Sprite - Employee
 
+There is one existing claim that is preloaded, claim id = 1 and it's for client Tim and employee John. There is also a preloaded audit of 2 rows for the same claim.
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/c32f53a5-e74d-4d90-9a87-f334030dae77)
 
 #Submit Claim
@@ -49,7 +50,7 @@ Click on Submit claim and capture the fields. Then click "Submit".
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/07829eec-0637-4c22-883c-9c50727ffa28)
 
 
-NOTE that is you are logged in as an employee will rec
+NOTE that if you are logged in as an employee, you will see the following error
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/bf31121e-f20b-4b8c-bbbb-bf393e1babe8)
 
 Once sucessfully submit you will be taken to the result page
@@ -59,33 +60,33 @@ Once sucessfully submit you will be taken to the result page
 You can enter a Claim ID and then Click on Select A Claim to see the claim
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/a9aec3bd-d16e-4347-ad6b-0f170f69ee9a)
 
-if you enter a claim id that is not valid. you will be taken to the error screen
+if you enter a claim id that is not valid, you will be taken to the error screen
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/7440b081-7044-41cf-8eb9-a25e36035cbc)
 
-You can click on Select All Claims to get all the claims you as the Client submitted
+If you are the Client then you can click on Select All Claims to get all the claims that you have submitted
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/a82f709c-aa20-47da-8852-4d0420f3f955)
 
 #Cancel a claim
-From the Fetch Claims For Client menu you can click on Cancel Claim. IF ssucessful it will take you bback to a result screen
-if you click on Fetch Claims For Client again. You will see the status has changed for that Order
+From the Fetch Claims For Client menu you can click on Cancel Claim. If successful it will take you back to a result screen.
+If you click on Fetch Claims for Client again, you will see the status has changed for that specific claim
 
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/c66a90dc-fbfa-4e9e-9e25-4ea82257d1b7)
 
-IF you try cancel an approved or denied or cancelled claim you will be taken to the error page
+As a Client IF you try to cancel an approved or denied or cancelled claim you will be taken to the error page
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/396dd5f1-4d95-4dc9-88c0-942d4af5f39b)
 
 
 
 #Fetch Claim for Employee
-IF you are logged in a Client if you select any of the Select Button, nothing will happen
+IF you are logged in as a Client, and you select any of the Select Buttons, nothing will happen
 
-If you are logged in as employee you can Click on Fetch Claims for Employee. You can enter a Claim ID if that and CLient ID to get specific claim or you can click View All Claims for Employee "You Name"
+If you are logged in as an employee you can Click on Fetch Claims for Employee. You can enter a Claim ID and CLient ID to get a specific claim or you can click on View All Claims for Employee "Your Name"
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/a387294b-07c2-4001-93c4-dfee5e5d792b)
 
-You can Click on Approve Claim or Deny Claim and if sucessful you will be taken to the Result page. Once you navigate back to the Fetch Claims for EMployee page you will see the approval or denial you have just performed. If you try approve a cancel , approved or denied order you will be taken the error page
+You can Click on Approve Claim or Deny Claim and if successful then you will be taken to the Result page. Once you navigate back to the Fetch Claims for EMployee page you will see the approval or denial you have just performed. If you try to approve a cancelled, approved or denied claim you will be taken the error page
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/09b0e4bc-be59-4239-a2e9-931bfd1bcaf9)
 
-IF you cick on History you will be taken to the ViewAuditClaim screen which will have the audit for the order
+IF you cick on History you will be taken to the ViewAuditClaim screen which will have the audit for the claim
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/b331f1f3-b0d7-45b6-bbc2-938c8e831768)
 
 
