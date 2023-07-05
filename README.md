@@ -28,7 +28,22 @@ Click Run NNGroup_FrontEnd.Server to start the Application
 # Instructions for Running the APP
 When running the Application Edge (or your default browser) will run the front end on https://localhost:7275/
 the web api is running from http://localhost:5150
+
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/58fe6750-91a2-47e6-aabf-7f80e48e07e2)
+
+# Step to follow:
+# Get on Login
+Select a user from the drop down list and click login. Please is preloaded users and their role
+Bob Smoth - Client
+Tim Frodo - Client
+John Ester - Employee
+Frank Briggs - Employee
+Gaston Sprite - Employee
+
+![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/c32f53a5-e74d-4d90-9a87-f334030dae77)
+
+
+
 
 
 #Assumptions
