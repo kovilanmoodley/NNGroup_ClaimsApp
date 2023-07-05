@@ -1,6 +1,7 @@
 ﻿using ShareModels.Models;
 using NNGroup_FrontEnd.Server.Helper;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity;
 
 namespace NNGroup_FrontEnd.Server.DataAccess
 {
@@ -174,22 +175,10 @@ namespace NNGroup_FrontEnd.Server.DataAccess
             
             if (result.Count == 0) 
                 return null;
-            DataEncryption.DecryptAudit(result);
+            //DataEncryption.DecryptAudit(result);
             return result;
         }
-        /*public void AddDataToMemory<T>(List<T> memoryStore, string filePath)
-        {
-            if (memoryStore.Count == 0)
-            {
-                using (StreamReader r = new StreamReader(filePath))
-                {
-                    string json = r.ReadToEnd();
-                    var wrapper = new ListWrapper<T> { Items = JsonConvert.DeserializeObject<List<T>>(json) };
-                    //var data = JsonConvert.DeserializeObject<List<T>>(json);
-                    memoryStore.AddRange(wrapper.Items);
-                }
-            }
-        }*/
+        
         private void AddClientsToMemory()
         {
 
@@ -241,7 +230,34 @@ namespace NNGroup_FrontEnd.Server.DataAccess
                 }
             }
         }
+        public List<User> GetAllUsers()
+        {
+            if (ClientInMemoryStore.Count == 0)
+                AddClientsToMemory();
+            if (EmployeeInMemoryStore.Count == 0)
+                AddEmployeesToMemory();
+            List<User> users = new();
 
+            foreach(ShareModels.Models.Client c in ClientInMemoryStore)
+            { 
+                User newU = new() { UserName = $"{c.FirstName} {c.Surname}" ,
+                                    UserID = DataEncryption.Decrypt(c.ClientID),
+                                    IsEmployee = 0};
+                users.Add(newU);
+            }
+            foreach (Employee e in EmployeeInMemoryStore)
+            {
 
+                User newU = new()
+                {
+                    UserName = $"{e.FirstName} {e.Surname}",
+                    UserID = DataEncryption.Decrypt(e.EmployeeID),
+                    IsEmployee = 1
+                };
+                users.Add(newU);
+            }
+
+            return users;
+        }
     }
 }

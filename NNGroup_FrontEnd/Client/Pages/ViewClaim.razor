@@ -2,6 +2,7 @@
 @using ShareModels.Models
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavigationManager
+@inject ISyncLocalStorageService LocalStorage
 
 <h3>ViewClaim</h3>
 
@@ -11,7 +12,6 @@
         <thead>
             <tr>
                 <th>Claim ID</th>
-                <th>Policy Holder ID</th>
                 <th>Policy Holder</th>
                 <th>Policy Holder Address</th>
                 <th>Employee</th>
@@ -23,7 +23,6 @@
         <tbody>
             <tr>
                 <td>@claim.ClaimID</td>
-                <td>@claim.Client.ClientID</td>
                 <td>@($"{claim.Client.FirstName} {claim.Client.Surname}")</td>
                 <td>@($"{claim.Client.Address1} {claim.Client.Address2}")</td>
                 <td>@($"{claim.Employee.FirstName} {claim.Employee.Surname}")</td>

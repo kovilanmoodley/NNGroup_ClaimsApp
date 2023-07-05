@@ -21,17 +21,24 @@ namespace NNGroup_FrontEnd.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Claim>> GetByClient(int clientID)
         {
-
-            List<Claim> claims = _context.ViewClaimByClient(clientID)!;
-
-            if (claims.Count == 0)
+            try
             {
+                List<Claim> claims = _context.ViewClaimByClient(clientID)!;
 
-                return BadRequest();
+                if (claims.Count() == 0)
+                {
+
+                    return BadRequest();
+                }
+                else
+                {
+                    return Ok(claims);
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(claims);
+                return BadRequest();
             }
         }
 

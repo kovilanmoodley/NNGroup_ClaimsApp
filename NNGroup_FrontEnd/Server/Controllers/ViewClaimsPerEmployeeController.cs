@@ -22,17 +22,23 @@ namespace NNGroup_FrontEnd.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Claim>> GetByEmployee(int employeeID)
         {
-
-            List<Claim> claims = _context.ViewClaimByEmployee(employeeID)!;
-
-            if (claims.Count == 0)
+            try
             {
+                List<Claim> claims = _context.ViewClaimByEmployee(employeeID)!;
 
-                return BadRequest();
+                if (claims.Count() == 0)
+                {
+
+                    return BadRequest();
+                }
+                else
+                {
+                    return Ok(claims);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(claims);
+                return BadRequest();
             }
         }
 

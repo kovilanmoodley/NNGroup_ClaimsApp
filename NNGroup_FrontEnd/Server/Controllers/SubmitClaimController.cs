@@ -24,23 +24,29 @@ namespace NNGroup_FrontEnd.Server.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Claim> Create(ClaimRequest claimRequest)
         {
-            int newID = _context.MakeClaim(claimRequest);
-            if (newID == -1)
-                return BadRequest("Employee or Client List is empty");
-            if (newID == -2)
-                return NotFound("Client ID not found");
-
-            
-            Claim claim = _context.ViewClaim(newID, claimRequest.ClientID)!;
-            /*var obj = new
+            try
             {
-                ClaimID = newId
-            };
-            var json = JsonSerializer.Serialize(obj);*/
-            return Ok(claim);
+                int newID = _context.MakeClaim(claimRequest);
+                if (newID == -1)
+                    return BadRequest();
+                if (newID == -2)
+                    return BadRequest();
+
+
+                Claim claim = _context.ViewClaim(newID, claimRequest.ClientID)!;
+                /*var obj = new
+                {
+                    ClaimID = newId
+                };
+                var json = JsonSerializer.Serialize(obj);*/
+                return Ok(claim);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
         }
         
 

@@ -3,6 +3,7 @@
 @inject HttpClient Http
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavigationManager
+@inject ISyncLocalStorageService LocalStorage
 
 <PageTitle>Audit CLaim View</PageTitle>
 
@@ -21,10 +22,8 @@ else
             <tr>
                 <th>Audit Date</th>
                 <th>Claim ID</th>
-                <th>Policy Holder ID</th>
                 <th>Policy Holder</th>
                 <th>Policy Holder Address</th>
-                <th>Employee ID</th>
                 <th>Employee</th>
                 <th>Employee Address</th>
                 <th>Claim Description</th>
@@ -38,10 +37,8 @@ else
                 <tr>
                     <td>@auditClaim.AuditDate.ToShortDateString()</td>
                     <td>@auditClaim.ClaimID</td>
-                    <td>@auditClaim.Client.ClientID</td>
                     <td>@($"{auditClaim.Client.FirstName} {auditClaim.Client.Surname}")</td>
                     <td>@($"{auditClaim.Client.Address1} {auditClaim.Client.Address2}")</td>
-                    <td>@auditClaim.Employee.EmployeeID</td>
                     <td>@($"{auditClaim.Employee.FirstName} {auditClaim.Employee.Surname}")</td>
                     <td>@($"{auditClaim.Employee.Address1} {auditClaim.Employee.Address2}")</td>
                     <td>@auditClaim.ClaimDescription</td>
@@ -59,7 +56,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        auditClaims = await Http.GetFromJsonAsync<AuditClaim[]>($"api/ViewAuditClaim?claimid={claim.ClaimID}&employeeid={claim.Employee.EmployeeID}");
+        if (LocalStorage.GetItemAsString("IsEmployee") == "1")
+        {
+            auditClaims = await Http.GetFromJsonAsync<AuditClaim[]>($"api/ViewAuditClaim?claimid={claim.ClaimID}&employeeid={LocalStorage.GetItemAsString("UserID")}");
+ 
+        }
+        
     }
 
     protected override void OnInitialized()

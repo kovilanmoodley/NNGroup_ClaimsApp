@@ -2,7 +2,7 @@
 @using ShareModels.Models
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavigationManager
-
+@inject ISyncLocalStorageService LocalStorage
 <h3>ErrorScreen</h3>
 <div class="alert alert-primary" role="alert">
     Error in Processing Claim : @errorMessage

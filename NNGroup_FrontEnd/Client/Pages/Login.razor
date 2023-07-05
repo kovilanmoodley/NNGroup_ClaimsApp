@@ -1,0 +1,78 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.WebUtilities
+@using ShareModels.Models
+@using NNGroup_FrontEnd.Shared
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+
+
+<h3>Login</h3>
+@if (fullUserList != null)
+{
+    <EditForm Model="user" OnValidSubmit="HandleLogin">
+        <div class="mb-3">
+            <label for="userID">User Profile</label>
+            <InputSelect id="userID" @bind-Value="user.UserID" class="form-control">
+                @foreach (User u in fullUserList)
+                {
+                    <option value=@u.UserID>@u.UserName </option>
+                    
+
+                }
+            </InputSelect>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+    </EditForm>
+}
+
+@code {
+    private User user = new User();
+    private List<User> fullUserList = new();
+    private string returnUrl = string.Empty;
+
+
+
+    protected override void OnInitialized()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+        {
+            returnUrl = url;
+        }
+
+    }
+
+    private async Task HandleLogin()
+    {
+        //var result = await AuthService.Login(user);
+        foreach (User u in fullUserList)
+        {
+            if (user.UserID == u.UserID)
+            {
+                await LocalStorage.SetItemAsync("UserID", u.UserID);
+                await LocalStorage.SetItemAsync("UserName", u.UserName);
+                await LocalStorage.SetItemAsync("IsEmployee", u.IsEmployee);
+            }
+
+
+        }
+        NavigationManager.NavigateTo(returnUrl);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        fullUserList = await Http.GetFromJsonAsync<List<User>>($"api/User");
+        if (fullUserList.Count > 0)
+        {
+            user.UserID = fullUserList[0].UserID;
+        }
+    }
+/*                    string @usertype = $"{@u.UserName} Employee";
+                    @if (u.IsEmployee == 0)
+                        usertype = $"{@u.UserName} Client";
+                    <option value=@u.UserID>@usertype </option>*/
+
+}
+

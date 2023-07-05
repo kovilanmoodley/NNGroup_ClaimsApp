@@ -3,15 +3,12 @@
 @using System.Text.Json;
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject ISyncLocalStorageService LocalStorage
 
 <h3>SubmitClaim</h3>
 
 <EditForm Model="claimRequest" OnSubmit="@HandleSubmit">
-    <div>
-        <label for="clientID">Client ID :
-            <InputNumber id="clientID" @bind-Value="claimRequest.ClientID" />
-        </label>
-    </div>
+
 
     <div>
         <label for="claimDescription">Claim Description : 
@@ -33,7 +30,7 @@
 }
 else
 {
-    <p>Error Creating claim</p>
+    <p>Error Creating claim Invalid USer. Employee cannot enter claims</p>
 }
 
 @code {
@@ -43,6 +40,7 @@ else
 
     async Task HandleSubmit()
     {
+        claimRequest.ClientID = int.Parse(LocalStorage.GetItemAsString("UserID"));
         HttpResponseMessage response = await Http.PostAsJsonAsync("api/SubmitClaim", claimRequest);
         if (response.IsSuccessStatusCode)
         {

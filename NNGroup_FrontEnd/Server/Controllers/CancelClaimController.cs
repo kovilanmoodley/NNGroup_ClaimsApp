@@ -21,18 +21,25 @@ namespace NNGroup_FrontEnd.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<ServiceResult> CancelClaim([FromBody] ClaimStatusChangeRequest claimStatusChangeRequest)
         {
-            string result = _context.CancelClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID);
-            ServiceResult serviceResult = new();
+            try
+            {
+                string result = _context.CancelClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID);
+                ServiceResult serviceResult = new();
 
-            if (result != "Ok")
-            {
-                serviceResult.ResultStatus = result;
-                return BadRequest(result);
+                if (result != "Ok")
+                {
+                    serviceResult.ResultStatus = result;
+                    return BadRequest(result);
+                }
+                else
+                {
+                    serviceResult.ResultStatus = "Claim has been cancelled";
+                    return Ok(serviceResult.ResultStatus);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                serviceResult.ResultStatus = "Claim has been cancelled";
-                return Ok(serviceResult.ResultStatus);
+                return BadRequest(ex.Message);
             }
 
         }

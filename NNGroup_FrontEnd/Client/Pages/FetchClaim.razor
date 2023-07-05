@@ -3,6 +3,7 @@
 @using System.Text.Json;
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject ISyncLocalStorageService LocalStorage
 
 <PageTitle>Display CLaim and Status</PageTitle>
 
@@ -18,15 +19,10 @@
         <label for="textInput">Claim ID:</label>
         <input type="text" id="textInput" @bind="@claimID" />
     </div>
-    <div class="p-2 bg-light border">
-        <div>
-            <label for="textInput">Client ID:</label>
-            <input type="text" id="textInput" @bind="@clientID" />
-        </div>
-    </div>
 </div>
 
-<button class="btn btn-primary" @onclick="ViewClaims">Click me</button>
+<button class="btn btn-primary" @onclick="ViewSpecificClaim">Select A Claim</button>
+<button class="btn btn-primary" @onclick="ViewAllClaims">Select All Claims</button>
 
 
 
@@ -37,7 +33,6 @@
         <thead>
             <tr>
                 <th>Claim ID</th>
-                <th>Policy Holder ID</th>
                 <th>Policy Holder</th>
                 <th>Policy Holder Address</th>
                 <th>Employee</th>
@@ -52,7 +47,6 @@
             {
                 <tr>
                     <td>@claim.ClaimID</td>
-                    <td>@claim.Client.ClientID</td>
                     <td>@(
                         $"{claim.Client.FirstName} {claim.Client.Surname}"
                         )</td>
@@ -80,14 +74,30 @@
     private List<Claim> claims { get; set; } = new();
     private ClaimStatusChangeRequest claimStatusChangeRequest { get; set; }
 
-    private async Task ViewClaims()
+    protected override void OnInitialized()
+    {
+        clientID = LocalStorage.GetItemAsString("UserID");
+    }
+    private async Task ViewSpecificClaim()
+    {
+        await ViewClaims(claimID);
+
+    }
+    private async Task ViewAllClaims()
+    {
+       
+        await ViewClaims(null);
+
+    }
+
+    private async Task ViewClaims(string newClaimID)
     {
         string apiUrl = "";
         bool isSingle = false;
         claims.Clear();
-        if ((!string.IsNullOrEmpty(claimID)) && (!string.IsNullOrEmpty(clientID)))
+        if ((!string.IsNullOrEmpty(newClaimID)) && (!string.IsNullOrEmpty(clientID)))
         {
-            apiUrl = $"api/ViewClaimStatus?claimID={claimID}&clientID={clientID}";
+            apiUrl = $"api/ViewClaimStatus?claimID={newClaimID}&clientID={clientID}";
             isSingle = true;
         }
         else if (!string.IsNullOrEmpty(clientID))
@@ -126,7 +136,7 @@
 
     async Task CancelClaim(Claim claim)
     {
-        claimStatusChangeRequest = new() { ClaimID = claim.ClaimID, ID = claim.Client.ClientID };
+        claimStatusChangeRequest = new() { ClaimID = claim.ClaimID, ID = int.Parse(clientID) };
         HttpResponseMessage response = await Http.PostAsJsonAsync("api/CancelClaim", claimStatusChangeRequest);
         if (response.IsSuccessStatusCode)
         {

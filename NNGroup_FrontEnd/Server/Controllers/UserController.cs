@@ -1,38 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using NNGroup_FrontEnd.Server.DataAccess;
 using ShareModels.Models;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace NNGroup_FrontEnd.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ViewAuditClaimController : ControllerBase
+    public class UserController : ControllerBase
     {
         public readonly IClaimDataAccess _context;
-        public ViewAuditClaimController(IClaimDataAccess context)
+        public UserController(IClaimDataAccess context)
         {
             _context = context;
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult Get(int claimid, int employeeid)
+        public ActionResult<List<User>> Get()
         {
             try
             {
-                List<AuditClaim> fullClaimHistory = _context.ViewFullClaimHistory(claimid, employeeid)!;
+                List<User> users = _context.GetAllUsers()!;
 
-                if (fullClaimHistory == null)
+                if (users.Count() == 0)
                     return BadRequest();
                 else
-                    return Ok(fullClaimHistory);
+                    return Ok(users);
             }
             catch (Exception ex)
             {
                 return BadRequest();
             }
         }
+        
     }
 }

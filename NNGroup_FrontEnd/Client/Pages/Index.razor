@@ -1,11 +1,28 @@
 ﻿@page "/"
-
-
+@inject ISyncLocalStorageService LocalStorage
+@inject ISyncLocalStorageService LocalStorage
 
 <PageTitle>Index</PageTitle>
+@if (@LocalStorage.GetItemAsString("UserName") == null)
+{
+    <h1>Hello  </h1>
 
-<h1>Hello, world!</h1>
+}
+else
+{
+    <h1>Hello  @LocalStorage.GetItemAsString("UserName") </h1>
 
+}
 Welcome to your new app.
+@if (@LocalStorage.GetItemAsString("IsEmployee") == "0")
+{
+    <h1>You are a Client </h1>
+
+}
+else
+{
+    <h1>You are an Employee  </h1>
+
+}
 
 <SurveyPrompt Title="How is Blazor working for you?" />

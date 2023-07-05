@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNGroup_DataManager", "NNGroup_DataManager\NNGroup_DataManager.csproj", "{2DC9C45F-958C-492F-9C20-EE1BD1F8A7A1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShareModels", "ShareModels\ShareModels.csproj", "{57E684DA-AAB7-43A0-9102-CEE64B5EE7F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NNGroup_FrontEnd.Server", "NNGroup_FrontEnd\Server\NNGroup_FrontEnd.Server.csproj", "{D828BDC0-2FB3-4969-803D-55503A3E2335}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNGroup_FrontEnd.Server", "NNGroup_FrontEnd\Server\NNGroup_FrontEnd.Server.csproj", "{D828BDC0-2FB3-4969-803D-55503A3E2335}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NNGroup_FrontEnd.Client", "NNGroup_FrontEnd\Client\NNGroup_FrontEnd.Client.csproj", "{C44AB5B2-424C-4A9E-A71C-C1894CA73108}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNGroup_FrontEnd.Client", "NNGroup_FrontEnd\Client\NNGroup_FrontEnd.Client.csproj", "{C44AB5B2-424C-4A9E-A71C-C1894CA73108}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NNGroup_FrontEnd.Shared", "NNGroup_FrontEnd\Shared\NNGroup_FrontEnd.Shared.csproj", "{A035CAED-BFB1-4F5B-B55E-264A3836D32E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNGroup_FrontEnd.Shared", "NNGroup_FrontEnd\Shared\NNGroup_FrontEnd.Shared.csproj", "{A035CAED-BFB1-4F5B-B55E-264A3836D32E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2DC9C45F-958C-492F-9C20-EE1BD1F8A7A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DC9C45F-958C-492F-9C20-EE1BD1F8A7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DC9C45F-958C-492F-9C20-EE1BD1F8A7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DC9C45F-958C-492F-9C20-EE1BD1F8A7A1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{57E684DA-AAB7-43A0-9102-CEE64B5EE7F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{57E684DA-AAB7-43A0-9102-CEE64B5EE7F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57E684DA-AAB7-43A0-9102-CEE64B5EE7F5}.Release|Any CPU.ActiveCfg = Release|Any CPU

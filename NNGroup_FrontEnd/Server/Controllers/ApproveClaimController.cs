@@ -22,21 +22,27 @@ namespace NNGroup_FrontEnd.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<ServiceResult> ApproveClaim([FromBody] ClaimStatusChangeRequest claimStatusChangeRequest)
         {
-            string result = _context.ApproveDenyClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID, "Approved");
-            ServiceResult serviceResult = new();
-
-            if (result != "Ok")
+            try
             {
-                serviceResult.ResultStatus = result;
-                return BadRequest(result);
-            }
-            else
-            {
-                serviceResult.ResultStatus = "Claim has been approved";
-                return Ok(serviceResult.ResultStatus);
-            }
+                string result = _context.ApproveDenyClaim(claimStatusChangeRequest.ClaimID, claimStatusChangeRequest.ID, "Approved");
+                ServiceResult serviceResult = new();
 
+                if (result != "Ok")
+                {
+                    serviceResult.ResultStatus = result;
+                    return BadRequest(result);
+                }
+                else
+                {
+                    serviceResult.ResultStatus = "Claim has been approved";
+                    return Ok(serviceResult.ResultStatus);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
     }
+
 }

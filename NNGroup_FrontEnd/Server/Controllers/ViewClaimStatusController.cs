@@ -24,17 +24,23 @@ namespace NNGroup_FrontEnd.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Claim> Get(int claimID, int clientID)
         {
-
-            ShareModels.Models.Claim claim = _context.ViewClaim(claimID, clientID)!;
-
-            if (claim == null)
+            try
             {
+                ShareModels.Models.Claim claim = _context.ViewClaim(claimID, clientID)!;
 
-                return BadRequest();
+                if (claim == null)
+                {
+
+                    return BadRequest();
+                }
+                else
+                {
+                    return Ok(claim);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(claim);
+                return BadRequest();
             }
         }
 
