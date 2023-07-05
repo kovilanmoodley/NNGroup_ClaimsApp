@@ -74,7 +74,17 @@ IF you try cancel an approved or denied or cancelled claim you will be taken to 
 
 
 
+#Fetch Claim for Employee
+IF you are logged in a Client if you select any of the Select Button, nothing will happen
 
+If you are logged in as employee you can Click on Fetch Claims for Employee. You can enter a Claim ID if that and CLient ID to get specific claim or you can click View All Claims for Employee "You Name"
+![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/a387294b-07c2-4001-93c4-dfee5e5d792b)
+
+You can Click on Approve Claim or Deny Claim and if sucessful you will be taken to the Result page. Once you navigate back to the Fetch Claims for EMployee page you will see the approval or denial you have just performed. If you try approve a cancel , approved or denied order you will be taken the error page
+![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/09b0e4bc-be59-4239-a2e9-931bfd1bcaf9)
+
+IF you cick on History you will be taken to the ViewAuditClaim screen which will have the audit for the order
+![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/b331f1f3-b0d7-45b6-bbc2-938c8e831768)
 
 
 #Assumptions
