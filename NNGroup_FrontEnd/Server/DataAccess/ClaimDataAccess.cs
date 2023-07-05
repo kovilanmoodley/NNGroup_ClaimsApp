@@ -17,15 +17,15 @@ namespace NNGroup_FrontEnd.Server.DataAccess
         private int nextClaimID = 1;
         public List<AuditClaim> AuditClaimInMemoryStore = new List<AuditClaim>();
         private int nextAuditClaimID = 2;
-        private IConfiguration config;
+
         private int nextEmployee = 100;
-        public ClaimDataAccess(IConfiguration config)
+        public ClaimDataAccess()
         {
             AddClientsToMemory();
             AddEmployeesToMemory();
             AddClaimsToMemory();
             AddAuditClaimsToMemory();
-            this.config = config;
+            
         }
         
         /// <summary>
