@@ -31,6 +31,8 @@ the web api is running from http://localhost:5150
 
 ![image](https://github.com/kovilanmoodley/NNGroup_ClaimsApp/assets/132061651/58fe6750-91a2-47e6-aabf-7f80e48e07e2)
 
+
+
 # Step to follow:
 # Get on Login
 Select a user from the drop down list and click login. Please is preloaded users and their role
